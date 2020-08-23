@@ -3,7 +3,8 @@
 #define NUMPIXELS 1
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_RGB + NEO_KHZ800);
 uint32_t hsv_color = 0;
-int rgb[3];
+unsigned long previousMillis = 0;
+long AnimationDelay = 12000;  
 
 void setup() {
   Serial.begin(9600);
@@ -11,8 +12,13 @@ void setup() {
 }
 
 void loop() {
-ledanimation();
-delay(3000);
+unsigned long currentMillis = millis();
+if (currentMillis - previousMillis >= AnimationDelay)
+  {
+  previousMillis = currentMillis;
+  ledanimation();
+  }
+//delay(3000);
 }
 
 void ledanimation(){
@@ -25,24 +31,15 @@ if (hsv_new >= 65500){
 while (hsv_color != hsv_new){
 pixels.fill(pixels.ColorHSV(hsv_color));
 pixels.show();
-  
-//uint32_t kleur = pixels.ColorHSV(hsv_color);
-
-//  for(int i=0; i<NUMPIXELS; i++) { 
-    // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
-    // Here we're using a moderately bright green color:
-//    pixels.setPixelColor(i, kleur);
-//    pixels.show();
-//  }
-  hsv_color = hsv_color + 100;
+hsv_color = hsv_color + 100;
   if (hsv_color >= 65500) {
     hsv_color = 0; 
   }
-  Serial.print(hsv_color);
-Serial.print('\n');
-Serial.print(hsv_new);
-Serial.print('\n');
-delay(500);
+//Serial.print(hsv_color);
+//Serial.print('\n');
+//Serial.print(hsv_new);
+//Serial.print('\n');
+delay(20);
 }
 hsv_new = hsv_color;
 }
