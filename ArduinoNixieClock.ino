@@ -11,9 +11,7 @@ void setup() {
 }
 
 void loop() {
-//ledanimation();
-pixels.fill(pixels.ColorHSV(65536));
-pixels.show();
+ledanimation();
 delay(3000);
 }
 
@@ -25,15 +23,17 @@ if (hsv_new >= 65500){
 }
 
 while (hsv_color != hsv_new){
+pixels.fill(pixels.ColorHSV(hsv_color));
+pixels.show();
+  
+//uint32_t kleur = pixels.ColorHSV(hsv_color);
 
-uint32_t kleur = pixels.ColorHSV(hsv_color);
-
-  for(int i=0; i<NUMPIXELS; i++) { 
+//  for(int i=0; i<NUMPIXELS; i++) { 
     // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
     // Here we're using a moderately bright green color:
-    pixels.setPixelColor(i, kleur);
-    pixels.show();
-  }
+//    pixels.setPixelColor(i, kleur);
+//    pixels.show();
+//  }
   hsv_color = hsv_color + 100;
   if (hsv_color >= 65500) {
     hsv_color = 0; 
