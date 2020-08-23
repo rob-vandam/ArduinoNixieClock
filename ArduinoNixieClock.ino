@@ -2,7 +2,7 @@
 #define PIN 7
 #define NUMPIXELS 1
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_RGB + NEO_KHZ800);
-int hsv_color = random(0,360);
+uint32_t hsv_color = 0;
 int rgb[3];
 
 void setup() {
@@ -19,9 +19,9 @@ delay(3000);
 
 void ledanimation(){
 
-int hsv_new = hsv_color + 59;
-if (hsv_new >= 360){
-  hsv_new = hsv_new-360;  
+uint32_t hsv_new = hsv_color + 10900;
+if (hsv_new >= 65500){
+  hsv_new = hsv_new-65500;  
 }
 
 while (hsv_color != hsv_new){
@@ -34,8 +34,8 @@ uint32_t kleur = pixels.ColorHSV(hsv_color);
     pixels.setPixelColor(i, kleur);
     pixels.show();
   }
-  hsv_color = hsv_color + 1;
-  if (hsv_color >= 360) {
+  hsv_color = hsv_color + 100;
+  if (hsv_color >= 65500) {
     hsv_color = 0; 
   }
   Serial.print(hsv_color);
