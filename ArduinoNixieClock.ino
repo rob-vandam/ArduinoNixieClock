@@ -7,10 +7,20 @@ RTC_DS3231 rtc;
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_RGB + NEO_KHZ800);
 uint32_t hsv_color = 0;
 unsigned long previousMillis = 0;
-long AnimationDelay = 12000;  
+long AnimationDelay = 12000;
+int m2;  
+//Pin connected to ST_CP of 74HC595
+int latchPin = 8;
+//Pin connected to SH_CP of 74HC595
+int clockPin = 12;
+////Pin connected to DS of 74HC595
+int dataPin = 11;
 
 void setup() {
   Serial.begin(9600);
+   pinMode(latchPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(dataPin, OUTPUT);
   pixels.begin();
  if (! rtc.begin()) {
    Serial.println("Couldn't find RTC");
@@ -26,6 +36,8 @@ void setup() {
     // January 21, 2014 at 3am you would call:
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
+ DateTime now = rtc.now();
+ m2 = now.minute();
 }
 
 void loop() {
@@ -36,21 +48,16 @@ if (currentMillis - previousMillis >= AnimationDelay)
   previousMillis = currentMillis;
   ledanimation();
   }
-  Serial.print(now.year(), DEC);
-    Serial.print('/');
-    Serial.print(now.month(), DEC);
-    Serial.print('/');
-    Serial.print(now.day(), DEC);
-    Serial.print(" (");
-  //  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-    Serial.print(") ");
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.println();
-//delay(3000);
+int h1 = now.hour();
+int m1 = now.minute();
+if (m1!=m2){ 
+    int timearray[]={(h1/10)%10,h1%10,(m1/10)%10,m1%10};
+    for (int i=0; i < sizeof(timearray)/sizeof(int);i++){
+    Serial.print(timearray[i]);
+    }
+    Serial.print('\n');
+    m2 = m1;
+  }
 }
 
 void ledanimation(){
@@ -74,4 +81,25 @@ hsv_color = hsv_color + 100;
 delay(20);
 }
 hsv_new = hsv_color;
+}
+
+void displaytime(){
+  for (int i=0;i<10;i++){
+    byte digit1 = i;
+    byte digit2 = 9 << 4;
+    byte digit3 = 5;
+    byte digit4 = 2 <<4;
+    byte numberToDisplay = digit1 ^ digit2;
+    byte numberToDisplay1 = digit3 ^ digit4;
+    //byte sum = numberToDisplay + numberToDisplay1;
+    // take the latchPin low so 
+    // the LEDs don't change while you're sending in bits:
+    digitalWrite(latchPin, LOW);
+    // shift out the bits:
+    shiftOut(dataPin, clockPin, MSBFIRST, numberToDisplay1);  
+    shiftOut(dataPin, clockPin, MSBFIRST, numberToDisplay);
+    //take the latch pin high so the LEDs will light up:
+    digitalWrite(latchPin, HIGH);
+    // pause before next value:
+  }
 }
