@@ -87,11 +87,11 @@ hsv_new = hsv_color;
 }
 
 void displaytime(){
-  for (int i=0;i<10;i++){
-    byte digit1 = i;
-    byte digit2 = 9 << 4;
-    byte digit3 = 5;
-    byte digit4 = 2 <<4;
+  //for (byte i=0;i< sizeof(timearray);i++){
+    byte digit1 = timearray[0];
+    byte digit2 = timearray[1] << 4;
+    byte digit3 = timearray[2];
+    byte digit4 = timearray[3] <<4;
     byte numberToDisplay = digit1 ^ digit2;
     byte numberToDisplay1 = digit3 ^ digit4;
     //byte sum = numberToDisplay + numberToDisplay1;
@@ -104,5 +104,5 @@ void displaytime(){
     //take the latch pin high so the LEDs will light up:
     digitalWrite(latchPin, HIGH);
     // pause before next value:
-  }
+ // }
 }
