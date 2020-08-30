@@ -87,7 +87,11 @@ hsv_new = hsv_color;
 }
 
 void displaytime(){
-  //for (byte i=0;i< sizeof(timearray);i++){
+  for (byte i=0;i< sizeof(timearray);i++){
+    Serial.print('time: ');
+    Serial.print(timearray[i]);
+  }
+  Serial.print('\n');
     byte digit1 = timearray[0];
     byte digit2 = timearray[1] << 4;
     byte digit3 = timearray[2];
