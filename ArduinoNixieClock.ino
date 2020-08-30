@@ -22,6 +22,7 @@ void setup() {
    pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
+  anticathodepoisoning();
   pixels.begin();
  if (! rtc.begin()) {
    Serial.println("Couldn't find RTC");
