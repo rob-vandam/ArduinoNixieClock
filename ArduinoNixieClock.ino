@@ -110,3 +110,24 @@ void displaytime(){
     // pause before next value:
  // }
 }
+
+void anticathodepoisoning() {
+ for (byte i=0;i<10;i++){
+    byte digit1 = i;
+    byte digit2 = i << 4;
+    byte digit3 = i;
+    byte digit4 = i <<4;
+    byte numberToDisplay = digit1 ^ digit2;
+    byte numberToDisplay1 = digit3 ^ digit4;
+    //byte sum = numberToDisplay + numberToDisplay1;
+    // take the latchPin low so 
+    // the LEDs don't change while you're sending in bits:
+    digitalWrite(latchPin, LOW);
+    // shift out the bits:
+    shiftOut(dataPin, clockPin, MSBFIRST, numberToDisplay1);  
+    shiftOut(dataPin, clockPin, MSBFIRST, numberToDisplay);
+    //take the latch pin high so the LEDs will light up:
+    digitalWrite(latchPin, HIGH);
+   delay(1000);
+ }
+}
