@@ -15,6 +15,7 @@ int latchPin = 8;
 int clockPin = 12;
 ////Pin connected to DS of 74HC595
 int dataPin = 11;
+byte timearray[6];
 
 void setup() {
   Serial.begin(9600);
@@ -51,11 +52,13 @@ if (currentMillis - previousMillis >= AnimationDelay)
 int h1 = now.hour();
 int m1 = now.minute();
 if (m1!=m2){ 
-    int timearray[]={(h1/10)%10,h1%10,(m1/10)%10,m1%10};
-    for (int i=0; i < sizeof(timearray)/sizeof(int);i++){
-    Serial.print(timearray[i]);
-    }
-    Serial.print('\n');
+    byte newtimearray[]={(h1/10)%10,h1%10,(m1/10)%10,m1%10};
+    memcpy(timearray,newtimearray,6);
+    displaytime();
+//    for (int i=0; i < sizeof(timearray)/sizeof(int);i++){
+//    Serial.print(timearray[i]);
+//    }
+//    Serial.print('\n');
     m2 = m1;
   }
 }
