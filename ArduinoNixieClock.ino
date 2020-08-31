@@ -16,6 +16,9 @@ int clockPin = 12;
 ////Pin connected to DS of 74HC595
 int dataPin = 11;
 int timearray[4];
+byte PinHour = 2;
+byte PinMinute = 3;
+bool timechanged = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -40,6 +43,8 @@ void setup() {
   }
  DateTime now = rtc.now();
  m2 = now.minute();
+ attachInterrupt(digitalPinToInterrupt(PinHour), changehour, RISING);
+ attachInterrupt(digitalPinToInterrupt(PinMinute), changeminute, RISING);
 }
 
 void loop() {
@@ -52,16 +57,25 @@ if (currentMillis - previousMillis >= AnimationDelay)
   }
 int h1 = now.hour();
 int m1 = now.minute();
-if (m1!=m2){ 
+if ((m1!=m2) || (timechanged == 1)){ 
     int newtimearray[]={(h1/10)%10,h1%10,(m1/10)%10,m1%10};
     memcpy(timearray,newtimearray,sizeof(timearray));
     displaytime();
-//    for (int i=0; i < sizeof(timearray)/sizeof(int);i++){
-//    Serial.print(timearray[i]);
-//    }
-//    Serial.print('\n');
     m2 = m1;
+    timechanged = 0;
   }
+}
+
+void changehour(){
+  DateTime now = rtc.now();
+  rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour()+1,now.minute(),now.second()));
+  timechanged = 1;
+}
+
+void changeminute(){
+  DateTime now = rtc.now();
+  rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour(),now.minute()+1,now.second()));
+  timechanged = 1;
 }
 
 void ledanimation(){
