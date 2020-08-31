@@ -54,7 +54,7 @@ int h1 = now.hour();
 int m1 = now.minute();
 if (m1!=m2){ 
     int newtimearray[]={(h1/10)%10,h1%10,(m1/10)%10,m1%10};
-    memcpy(timearray,newtimearray,sizeof(timearray)/sizeof(int));
+    memcpy(timearray,newtimearray,sizeof(timearray));
     displaytime();
 //    for (int i=0; i < sizeof(timearray)/sizeof(int);i++){
 //    Serial.print(timearray[i]);
