@@ -19,10 +19,14 @@ int timearray[4];
 byte PinHour = 2;
 byte PinMinute = 3;
 bool timechanged = 0;
+bool hourchanged = 0;
+bool minutechanged = 0;
+long debouncing_time = 15;
+volatile unsigned long last_micros;
 
 void setup() {
   Serial.begin(9600);
-   pinMode(latchPin, OUTPUT);
+  pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
   anticathodepoisoning();
@@ -64,20 +68,28 @@ if ((m1!=m2) || (timechanged == 1)){
     m2 = m1;
     timechanged = 0;
   }
+  if (hourchanged == 1){
+   rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour()+1,now.minute(),now.second());
+   hourchanged = 0;
+ }
+ if (minutechanged == 1){
+   rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour(),now.minute()+1,now.second());
+   minutechanged = 0;
+ }
 }
 
 void changehour(){
-//  Serial.print('H');
-  DateTime now = rtc.now();
-  rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour()+1,now.minute(),now.second()));
+  if(long)(micros() - last_micros) >= debouncing_time *1000{
+  hourchanged = 1;
   timechanged = 1;
+  }
 }
 
 void changeminute(){
-//  Serial.print('M');
-  DateTime now = rtc.now();
-  rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour(),now.minute()+1,now.second()));
+  if(long)(micros() - last_micros) >= debouncing_time *1000{
+  minutechanged = 1;
   timechanged = 1;
+  }
 }
 
 void ledanimation(){
