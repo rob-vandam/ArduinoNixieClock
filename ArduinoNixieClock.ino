@@ -53,7 +53,7 @@ void setup() {
 
 void loop() {
 unsigned long currentMillis = millis();
-if (currentMillis - previousMillis >= AnimationDelay)
+if ((currentMillis - previousMillis >= AnimationDelay) && (timechanged != 1) && (hourchanged != 1) && (minutechanged != 1))
   {
   previousMillis = currentMillis;
   ledanimation();
