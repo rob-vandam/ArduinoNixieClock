@@ -118,10 +118,6 @@ hsv_color = hsv_color + 100;
   if (hsv_color >= 65500) {
     hsv_color = 0; 
   }
-//Serial.print(hsv_color);
-//Serial.print('\n');
-//Serial.print(hsv_new);
-//Serial.print('\n');
 delay(20);
 }
 hsv_new = hsv_color;
