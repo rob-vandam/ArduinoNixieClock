@@ -18,9 +18,9 @@ int dataPin = 11;
 int timearray[4];
 byte PinHour = 2;
 byte PinMinute = 3;
-bool timechanged = 0;
-bool hourchanged = 0;
-bool minutechanged = 0;
+volatile bool timechanged = 0;
+volatile bool hourchanged = 0;
+volatile bool minutechanged = 0;
 long debouncing_time = 15;
 volatile unsigned long last_micros;
 
@@ -68,25 +68,33 @@ if ((m1!=m2) || (timechanged == 1)){
     m2 = m1;
     timechanged = 0;
   }
-  if (hourchanged == 1){
-   rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour()+1,now.minute(),now.second());
+if (hourchanged == 1){
+   int newhour = now.hour()+1;
    hourchanged = 0;
+   if (newhour>23){
+    newhour=newhour-24;
+   }
+   rtc.adjust(DateTime(now.year(),now.month(),now.day(),newhour,now.minute(),now.second()));
  }
  if (minutechanged == 1){
-   rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour(),now.minute()+1,now.second());
-   minutechanged = 0;
+     minutechanged = 0;
+  int newminute = now.minute()+1;
+  if (newminute>59){
+    newminute=newminute-60;
+  }
+   rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour(),newminute,now.second()));
  }
 }
 
 void changehour(){
-  if(long)(micros() - last_micros) >= debouncing_time *1000{
+  if((micros() - last_micros) >= debouncing_time *1000){
   hourchanged = 1;
   timechanged = 1;
   }
 }
 
 void changeminute(){
-  if(long)(micros() - last_micros) >= debouncing_time *1000{
+  if((micros() - last_micros) >= debouncing_time *1000){
   minutechanged = 1;
   timechanged = 1;
   }
