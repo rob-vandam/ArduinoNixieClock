@@ -18,11 +18,11 @@ int dataPin = 11;
 int timearray[4];
 byte PinHour = 2;
 byte PinMinute = 3;
-volatile bool timechanged = 0;
-volatile bool hourchanged = 0;
-volatile bool minutechanged = 0;
-long debouncing_time = 15;
-volatile unsigned long last_micros;
+bool timechanged = 0;
+bool hourchanged = 0;
+bool minutechanged = 0;
+const unsigned long debounceTime = 10;  // milliseconds
+unsigned long switchPressTime;
 
 void setup() {
   Serial.begin(9600);
@@ -87,17 +87,21 @@ if (hourchanged == 1){
 }
 
 void changehour(){
-  if((micros() - last_micros) >= debouncing_time *1000){
-  hourchanged = 1;
-  timechanged = 1;
-  }
+  if (millis () - switchPressTime >= debounceTime)
+       {
+       switchPressTime = millis ();  
+       hourchanged = 1;
+       timechanged = 1;
+       }
 }
 
 void changeminute(){
-  if((micros() - last_micros) >= debouncing_time *1000){
-  minutechanged = 1;
-  timechanged = 1;
-  }
+  if (millis () - switchPressTime >= debounceTime)
+       {
+       switchPressTime = millis ();  
+       minutechanged = 1;
+       timechanged = 1;
+       }
 }
 
 void ledanimation(){
