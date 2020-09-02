@@ -29,8 +29,8 @@ void setup() {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-  pinmode(PinHour, INPUT_PULLDOWN);
-  pinmode(PinMinute, INPUT_PULLDOWN);
+  pinmode(PinHour, INPUT);
+  pinmode(PinMinute, INPUT);
   anticathodepoisoning();
   pixels.begin();
  if (! rtc.begin()) {
