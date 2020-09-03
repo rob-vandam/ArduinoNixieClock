@@ -21,16 +21,17 @@ byte PinMinute = 3;
 bool timechanged = 0;
 bool hourchanged = 0;
 bool minutechanged = 0;
-const unsigned long debounceTime = 10;  // milliseconds
+const unsigned long debounceTime = 50;  // milliseconds
 unsigned long switchPressTime;
+DateTime now;
 
 void setup() {
   Serial.begin(9600);
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-  pinmode(PinHour, INPUT);
-  pinmode(PinMinute, INPUT);
+  pinMode(PinHour, INPUT);
+  pinMode(PinMinute, INPUT);
   anticathodepoisoning();
   pixels.begin();
  if (! rtc.begin()) {
@@ -60,32 +61,40 @@ if ((currentMillis - previousMillis >= AnimationDelay) && (timechanged != 1) && 
   previousMillis = currentMillis;
   ledanimation();
   }
-DateTime now = rtc.now();
+  
+now = rtc.now();
 int h1 = now.hour();
 int m1 = now.minute();
-if ((m1!=m2) || (timechanged == 1)){ 
+
+if (hourchanged == 1){
+//   hourchanged = 0;
+   rtc.adjust(DateTime(now.year(),now.month(),now.day(),(now.hour()+1)%24,now.minute(),now.second()));
+//   now = rtc.now();
+//   Serial.print("H");
+//   Serial.print(now.hour());
+//   Serial.print(now.minute());
+//   Serial.print('\n');
+//   displaytime();
+ }
+ if (minutechanged == 1){
+//     minutechanged = 0;
+     rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour(),(now.minute()+1)%60,now.second()));
+     displaytime();
+ }
+
+if ((m1!=m2) || (timechanged == 1)||(hourchanged==1)||(minutechanged==1)){ 
+    //int newtimearray[]={(h1/10)%10,h1%10,(m1/10)%10,m1%10};
+    now = rtc.now();
+    h1 = now.hour();
+    m1 =now.minute();
     int newtimearray[]={(h1/10)%10,h1%10,(m1/10)%10,m1%10};
     memcpy(timearray,newtimearray,sizeof(timearray));
     displaytime();
     m2 = m1;
     timechanged = 0;
+    hourchanged= 0;
+    minutechanged = 0;
   }
-if (hourchanged == 1){
-   int newhour = now.hour()+1;
-   hourchanged = 0;
-   if (newhour>23){
-    newhour=newhour-24;
-   }
-   rtc.adjust(DateTime(now.year(),now.month(),now.day(),newhour,now.minute(),now.second()));
- }
- if (minutechanged == 1){
-     minutechanged = 0;
-  int newminute = now.minute()+1;
-  if (newminute>59){
-    newminute=newminute-60;
-  }
-   rtc.adjust(DateTime(now.year(),now.month(),now.day(),now.hour(),newminute,now.second()));
- }
 }
 
 void changehour(){
